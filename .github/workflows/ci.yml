@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate docker-compose.yml syntax
+        run: docker compose -p barq-assessment config
+
+      - name: Create .env from example
+        run: cp .env.example .env
+
+      - name: Build images
+        run: docker compose -p barq-assessment build
+
+      - name: Start environment
+        run: docker compose -p barq-assessment up -d
+
+      - name: Wait for readiness (bounded)
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8080/ready; then
+              echo "Environment is ready"
+              exit 0
+            fi
+            echo "Waiting for readiness... ($i/30)"
+            sleep 1
+          done
+          echo "Environment did not become ready in time" >&2
+          docker compose -p barq-assessment logs --no-color
+          exit 1
+
+      - name: Run validation script
+        run: python3 validate.py
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -p barq-assessment logs --no-color
+
+      - name: Tear down
+        if: always()
+        run: docker compose -p barq-assessment down -v
