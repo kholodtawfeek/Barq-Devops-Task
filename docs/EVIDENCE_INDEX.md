@@ -26,8 +26,11 @@ the recording (see note at the bottom).
 
 ## Video
 
-Video URL: [https://drive.google.com/drive/folders/10yFfsHqWQb2pNyP2BHk9o1V4zrSPMDse?usp=sharing]
-Final video commit: 0936534
+Video URL: https://drive.google.com/file/d/1ukb5mA83igg-bvQb-uryQf9IapT5LYGT/view?usp=sharing
+Video commit (state demonstrated live): 0936534
+Final repository commit (after post-video CI fix): 3289101
+CI run for final commit: [https://github.com/kholodtawfeek/Barq-Devops-Task/actions/runs/34389907393]
+
 
 ## Note on video-related rows
 
@@ -40,6 +43,26 @@ An earlier attempt during the same recording session produced commit 3d0b442 wit
 same message. That state was reverted in commit 1e96591 to restore the pre-video
 baseline (2 instances, port 8080) before repeating the live steps cleanly. Commit
 0936534 is the final, correct commit that matches the actual submitted video.
+
+## Note on post-video commits
+
+After the video was recorded, two documentation-only issues were discovered and fixed:
+
+1. Commit b9d673f: validate.py still referenced the video's temporary settings
+   (PUBLIC_PORT=8090, three instances). This caused CI to fail because CI runs
+   the committed baseline (2 instances, port 8080), not the live video state.
+   validate.py was reverted to check the baseline configuration.
+
+2. Commit 3289101: app-03 was still present in the committed docker-compose.yml
+   and nginx/nginx.conf from the live video demonstration. It was removed so the
+   committed baseline matches the documented 2-instance/port-8080 setup that CI
+   validates. The live 3-instance/port-8090 behavior remains fully demonstrated
+   and proven in the video itself; only the permanently committed config files
+   were restored to the baseline.
+
+Commit 3289101 is therefore the final repository state and the one referenced
+in the submission. CI run CI #23 (linked above) confirms it passes all checks.
+
 
 ## Note on known limitation
 
