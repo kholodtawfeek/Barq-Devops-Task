@@ -13,7 +13,7 @@ import urllib.error
 
 PROJECT = "barq-assessment"
 HOST = "127.0.0.1"
-PUBLIC_PORT = 8090
+PUBLIC_PORT = 8080
 BASE_URL = f"http://{HOST}:{PUBLIC_PORT}"
 TIMEOUT = 5
 MAX_WAIT = 30  # bounded wait for readiness
@@ -118,10 +118,10 @@ def main():
                 seen_instances.add(iid)
         except Exception:
             pass
-        if {"app-01", "app-02", "app-03"} <= seen_instances:
+        if {"app-01", "app-02"} <= seen_instances:
             break
         time.sleep(0.3)
-    record("both_backends_serving", {"app-01", "app-02", "app-03"} <= seen_instances,
+    record("both_backends_serving", {"app-01", "app-02"} <= seen_instances,
            f"seen={seen_instances}")
 
     # 5. /records create + list
