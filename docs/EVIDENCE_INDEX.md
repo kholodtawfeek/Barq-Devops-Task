@@ -19,15 +19,30 @@ the recording (see note at the bottom).
 | AI usage disclosure | AI_USAGE.md | e7f76b1 | TBD |
 | Architecture diagram | architecture.png | 05cfeac | TBD |
 | README (setup/build/test/backup/cleanup) | README.md | 281cc9a | TBD |
-| Recorded challenge (video_challenge.sh) | .assessment/challenge.json | TBD (video commit) | TBD |
-| Live port change 8080 -> 8090 | docker-compose.yml / .env | TBD (video commit) | TBD |
-| Live third app instance (app-03) | docker-compose.yml | TBD (video commit) | TBD |
-| Final validate.py rerun on 3-instance/8090 setup | validate.py output | TBD (video commit) | TBD |
+| Recorded challenge (video_challenge.sh) | .assessment/challenge.json | 0936534 | TBD |
+| Live port change 8080 -> 8090 | docker-compose.yml / .env | 0936534 | TBD |
+| Live third app instance (app-03) | docker-compose.yml | 0936534 | TBD |
+| Final validate.py rerun on 3-instance/8090 setup | validate.py output | 0936534 | TBD |
+
+## Video
+
+Video URL: [https://drive.google.com/drive/folders/10yFfsHqWQb2pNyP2BHk9o1V4zrSPMDse?usp=sharing]
+Final video commit: 0936534
 
 ## Note on video-related rows
 
-Rows marked "TBD (video commit)" correspond to live changes made only during the recorded
-video demonstration (port change, third instance, video_challenge.sh fix) and are committed
-during/after that recording, not before. Their commit hashes and video timestamps are added
-in a documentation-only follow-up commit after the video is recorded and uploaded, as
-permitted by the assessment rules ("Explain any later documentation-only commits").
+Rows marked with commit 0936534 correspond to live changes made only during the recorded
+video session (video_challenge.sh fix, port change, third instance, final validation).
+These changes were not present before the video and exist only as part of the live
+demonstration and its resulting commit.
+
+An earlier attempt during the same recording session produced commit 3d0b442 with the
+same message. That state was reverted in commit 1e96591 to restore the pre-video
+baseline (2 instances, port 8080) before repeating the live steps cleanly. Commit
+0936534 is the final, correct commit that matches the actual submitted video.
+
+## Note on known limitation
+
+STEP 11 (final validate.py rerun) shows one failed check: counter_increments. This was
+caused by a timing race when app-03 was added live — NGINX began routing traffic to it
+before its own healthcheck start_period completed. Full explanation in decisions.md.
