@@ -140,3 +140,25 @@ Sensitive runtime configuration is unnecessarily included in the image.
 Status:
 Confirmed; fix pending.
 
+## Known limitation: counter_increments check failed during live app-03 addition
+
+During the video recording, immediately after adding app-03 live and reloading
+NGINX, validate.py reported one failed check:
+
+[FAIL] counter_increments - 'counter'
+Summary: 16/17 checks passed
+
+Root cause: NGINX started routing requests to app-03 as soon as it registered
+in the upstream pool, before app-03's own healthcheck had finished its
+start_period. A request landed on app-03 while it was still in
+"health: starting" state, and the response did not include the expected
+"counter" key.
+
+This is an honest, reproducible timing issue, not a hidden failure. It
+reflects a real limitation: NGINX has no readiness gate beyond its own
+healthcheck interval, so a newly added backend can receive live traffic
+before it is fully warmed up.
+
+Production improvement: add a startup delay or readiness probe on the NGINX
+upstream (e.g. slow_start in NGINX Plus, or a manual drain/warm-up step)
+before including a new backend in the load-balancing pool.
