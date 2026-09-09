@@ -37,3 +37,19 @@ captured throughout this repository's commits and in troubleshooting.md/log_anal
 Real secrets, credentials or production data were never shared with the AI. All values in
 this repository (passwords, tokens) are synthetic lab-only values supplied by the assessment
 starter pack.
+
+## Note on duplicate commit message
+
+Commit history contains two commits with an identical message:
+"video: apply live challenge fix, change port to 8090, add app-03 instance"
+
+- Commit 3d0b442 was an earlier attempt during the recording session.
+- Commit 1e96591 reverted docker-compose.yml, nginx.conf and validate.py
+  back to the pre-video state (2 instances, port 8080) to allow a clean
+  restart of the live demonstration steps.
+- Commit 0936534 is the final, correct commit that matches the actual
+  submitted video. This is the commit referenced in the evidence index
+  and in the final submission.
+
+No commit dates were altered. Both commits were created in real time
+during the same working session.
